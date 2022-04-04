@@ -14,7 +14,7 @@ namespace Etcher
 
             if (elapsedTime > gameOverDelay * FRAME_RATE)
             {
-                HighScore.FieldEntry[] topScore = HighScore.TopScore;
+                HighScore.FieldEntry[] topScore = bType ? HighScore.TopScoreB : HighScore.TopScoreA;
                 int? newHighScoreIndex = null;
 
                 for (int i = 0; i < topScore.Length; i++)

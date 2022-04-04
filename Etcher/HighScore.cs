@@ -6,9 +6,9 @@ namespace Etcher
     public static class HighScore
     {
         public const int LIST_LENGTH = 10;
-
+        private const string FILE_NAME_A = "high_score_a.dat";
+        private const string FILE_NAME_B = "high_score_b.dat";
         private const int MAX_ENTRY_LENGTH = 20;
-        private const string FILE_NAME = "high_score.dat";
         private const uint FINISHED_DURATION = 2 * Game1.FRAME_RATE;
 
         public struct FieldEntry
@@ -28,34 +28,48 @@ namespace Etcher
 
         private static char markerCommand = '$';
         private static char[] delimiters = { '$', ':' };
-        private static FieldEntry[] topScore = new FieldEntry[LIST_LENGTH];
+        private static FieldEntry[] topScoreA = new FieldEntry[LIST_LENGTH];
+        private static FieldEntry[] topScoreB = new FieldEntry[LIST_LENGTH];
 
         public static string NameEntry { get; private set; } = "";
         public static int VirtualKeypadIndex { get; private set; } = 0;
         public static uint? Finished { get; private set; } = null;
 
-        public static FieldEntry[] TopScore
+        public static FieldEntry[] TopScoreA
         {
             get
             {
-                FieldEntry[] temp = new FieldEntry[topScore.Length];
+                FieldEntry[] temp = new FieldEntry[LIST_LENGTH];
 
-                for (int i = 0; i < topScore.Length; i++)
-                    temp[i] = new FieldEntry(topScore[i].name, topScore[i].score);
+                for (int i = 0; i < LIST_LENGTH; i++)
+                    temp[i] = new FieldEntry(topScoreA[i].name, topScoreA[i].score);
 
                 return temp;
             }
         }
 
-        public static string[] TopScoresAsString()
+        public static FieldEntry[] TopScoreB
         {
-            string[] temp = new string[topScore.Length];
-            for (int i = 0; i < topScore.Length; i++)
+            get
+            {
+                FieldEntry[] temp = new FieldEntry[topScoreB.Length];
+
+                for (int i = 0; i < topScoreB.Length; i++)
+                    temp[i] = new FieldEntry(topScoreB[i].name, topScoreB[i].score);
+
+                return temp;
+            }
+        }
+
+        public static string[] TopScoresAsString(bool bType)
+        {
+            string[] temp = new string[LIST_LENGTH];
+            for (int i = 0; i < LIST_LENGTH; i++)
                 temp[i] = 
                     (i + 1).ToString() + 
                     (i + 1 >= 10 ? ". " : ".  ") + 
-                    FormattedName(topScore[i].name, 20, i) + " " + 
-                    topScore[i].score.ToString();
+                    FormattedName(bType ? topScoreB[i].name : topScoreA[i].name, 20, i) + " " + 
+                    (bType ? topScoreB[i].score : topScoreA[i].score).ToString();
 
             return temp;
         }
@@ -133,8 +147,10 @@ namespace Etcher
             return s;
         }
 
-        public static void SubmitScore(FieldEntry entry)
+        public static void SubmitScore(FieldEntry entry, bool bType)
         {
+            FieldEntry[] topScore = bType ? topScoreB : topScoreA;
+
             for (int i = 0; i < LIST_LENGTH; i++)
             {
                 if (entry.score > topScore[i].score)
@@ -148,8 +164,10 @@ namespace Etcher
             }
         }
 
-        public static int? ListPosition(int score)
+        public static int? ListPosition(int score, bool bType)
         {
+            FieldEntry[] topScore = bType ? topScoreB : topScoreA;
+
             for (int i = 0; i < LIST_LENGTH; i++)
                 if (score > topScore[i].score)
 
@@ -158,14 +176,16 @@ namespace Etcher
             return null;
         }
 
-        public static async void LoadFromFileAsync()
+        public static async void LoadFromFileAsync(bool bType)
         {
             Windows.Storage.StorageFolder storageFolder = Windows.Storage.ApplicationData.Current.LocalFolder;
-            
-            if (!File.Exists(Windows.Storage.ApplicationData.Current.LocalFolder.Path + "\\" + FILE_NAME))
+
+            string filename = bType ? FILE_NAME_B : FILE_NAME_A;
+
+            if (!File.Exists(Windows.Storage.ApplicationData.Current.LocalFolder.Path + "\\" + filename))
             {
                 Windows.Storage.StorageFile file = await storageFolder.CreateFileAsync(
-                    FILE_NAME,
+                    filename,
                     Windows.Storage.CreationCollisionOption.OpenIfExists);
 
                 var stream = await file.OpenAsync(Windows.Storage.FileAccessMode.ReadWrite);
@@ -184,7 +204,7 @@ namespace Etcher
                 stream.Dispose();
             }
 
-            Windows.Storage.StorageFile fileRead = await storageFolder.GetFileAsync(FILE_NAME);
+            Windows.Storage.StorageFile fileRead = await storageFolder.GetFileAsync(filename);
 
             string text = await Windows.Storage.FileIO.ReadTextAsync(fileRead);
 
@@ -200,26 +220,30 @@ namespace Etcher
                 {
                     string[] terms = line.Split(delimiters);
 
-                    if (terms.Length == 3 && count < topScore.Length)
+                    if (terms.Length == 3 && count < LIST_LENGTH)
                     {
-                        topScore[count] = new FieldEntry(terms[1], Convert.ToInt32(terms[2]));
+                        if (bType)
+                            topScoreB[count] = new FieldEntry(terms[1], Convert.ToInt32(terms[2]));
+                        else topScoreA[count] = new FieldEntry(terms[1], Convert.ToInt32(terms[2]));
                         count++;
                     }
                 }
-                else if (count >= topScore.Length)
+                else if (count >= LIST_LENGTH)
                     break;
             }
 
-            MenuManager.UpdateHighScore(HighScore.TopScoresAsString());
+            MenuManager.UpdateHighScore(HighScore.TopScoresAsString(bType), bType);
         }
 
-        public static async void WriteToFileAsync()
+        public static async void WriteToFileAsync(bool bType)
         {
+            string filename = bType ? FILE_NAME_B : FILE_NAME_A;
+
             Windows.Storage.StorageFolder storageFolder = Windows.Storage.ApplicationData.Current.LocalFolder;
-            
-            if (File.Exists(Windows.Storage.ApplicationData.Current.LocalFolder.Path + "\\" + FILE_NAME))
+
+            if (File.Exists(Windows.Storage.ApplicationData.Current.LocalFolder.Path + "\\" + filename))
             {
-                Windows.Storage.StorageFile file = await storageFolder.GetFileAsync(FILE_NAME);
+                Windows.Storage.StorageFile file = await storageFolder.GetFileAsync(filename);
 
                 var stream = await file.OpenAsync(Windows.Storage.FileAccessMode.ReadWrite);
 
@@ -228,7 +252,10 @@ namespace Etcher
                     using (var dataWriter = new Windows.Storage.Streams.DataWriter(outputStream))
                     {
                         for (int i = 0; i < LIST_LENGTH; i++)
-                            dataWriter.WriteString("$" + topScore[i].name + ":" + topScore[i].score + Environment.NewLine);
+                        {
+                            FieldEntry iTopScore = bType ? topScoreB[i] : topScoreA[i];
+                            dataWriter.WriteString("$" + iTopScore.name + ":" + iTopScore.score + Environment.NewLine);
+                        }    
 
                         await dataWriter.StoreAsync();
                         await outputStream.FlushAsync();

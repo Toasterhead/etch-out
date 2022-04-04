@@ -13,7 +13,7 @@ namespace Etcher
     /// </summary>
     public partial class Game1 : Game
     {
-        public enum GameModes { Title, Action, Tutorial, GameOver, GameComplete, HighScore, Pause }
+        public enum GameModes { Title, Message, Action, Tutorial, GameOver, GameComplete, HighScore, Pause }
         public enum Layers { Front = 0, Middle, Back, EnumSize }
         public enum RenderEffects { None = 0, Scanline, PhosphorDot, Static, PhaseShift, EnumSize }
 
@@ -35,6 +35,7 @@ namespace Etcher
         public const uint DEATH_DURATION = 120;
         public const uint CLEAR_DURATION = 90;
         public const uint FIRST_START_DURATION = 3 * START_DURATION;
+        public const uint ITEM_APPEARANCE_PROBABILITY = 12 * FRAME_RATE; //B-type only.
 
         //Note: Rectangular play area within border is 38 x 26 tiles.
 
@@ -54,6 +55,7 @@ namespace Etcher
         public static float effectBrightness;
 
         public static bool quit;
+        public static bool bType;
         public static uint level;
         public static uint points;
         public static uint? gateTimer;
@@ -61,6 +63,7 @@ namespace Etcher
         public static uint? startTimer;
         public static uint? deathTimer;
         public static uint? clearTimer;
+        public static uint? messageTimer;
         public static uint orbTimer;
         public static uint universalTimer;
         public static uint universalTimeStamp;
@@ -154,7 +157,7 @@ namespace Etcher
             textLabelScore = new Textfield(characterSet, "Score", 0, 0, "Score".Length * TILE_SIZE, layer: (int)Layers.Back);
             textLabelTime = new Textfield(characterSet, "Time", 0, 0, "Time".Length * TILE_SIZE, layer: (int)Layers.Back);
             textMessage = new Textfield(characterSet, "", 0, 0, 40 * TILE_SIZE, layer: (int)Layers.Front);
-
+            
             textLabelScore.Draw();
             textLabelTime.Draw();
 
@@ -162,8 +165,11 @@ namespace Etcher
             MenuManager.ConstructPauseMenu();
             MenuManager.ConstructTextFields();
             MenuManager.Apply(null);
-            
-            HighScore.LoadFromFileAsync();
+
+            bType = false;
+
+            HighScore.LoadFromFileAsync(bType: false);
+            HighScore.LoadFromFileAsync(bType: true);
 
             gameMode = GameModes.Title;
             PlayMusic(Sounds.Music.TITLE, repeat: true);
@@ -193,6 +199,8 @@ namespace Etcher
             {
                 case GameModes.Title: CheckTitleInput();
                     break;
+                case GameModes.Message: CheckMessageInput();
+                    break;
                 case GameModes.Action: CheckActionInput();
                     break;
                 case GameModes.Tutorial: CheckTutorialInput();
@@ -216,9 +224,11 @@ namespace Etcher
             {
                 case GameModes.Title: UpdateTitleMode();
                     break;
+                case GameModes.Message: UpdateMessageeMode();
+                    break;
                 case GameModes.Action: if (ProcessActionDelay()) UpdateActionMode();
                     break;
-                case GameModes.Tutorial: if (ProcessActionDelay()) UpdateActionMode();//
+                case GameModes.Tutorial: if (ProcessActionDelay()) UpdateActionMode();
                     break;
                 case GameModes.Pause:
                     break;
@@ -251,6 +261,8 @@ namespace Etcher
             switch (gameMode)
             {
                 case GameModes.Title: DrawTitleMode();
+                    break;
+                case GameModes.Message: DrawMessageMode();
                     break;
                 case GameModes.Action: DrawActionMode();
                     break;

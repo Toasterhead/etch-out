@@ -12,8 +12,11 @@ namespace Etcher
             int totalHeight = canvasMultiplier * canvasRaw.Height;
             int halfWidth = (int)(totalWidth * 0.5);
             int halfHeight = (int)(totalHeight * 0.5);
-            int centerX = (int)(Windows.UI.ViewManagement.ApplicationView.GetForCurrentView().VisibleBounds.Width * 0.5);
-            int centerY = (int)(Windows.UI.ViewManagement.ApplicationView.GetForCurrentView().VisibleBounds.Height * 0.5);
+
+            int centerX = (int)(Window.ClientBounds.Width * 0.5);
+            int centerY = (int)(Window.ClientBounds.Height * 0.5);
+            //int centerX = (int)(Windows.UI.ViewManagement.ApplicationView.GetForCurrentView().VisibleBounds.Width * 0.5);
+            //int centerY = (int)(Windows.UI.ViewManagement.ApplicationView.GetForCurrentView().VisibleBounds.Height * 0.5);
 
             GraphicsDevice.SetRenderTarget(null);
             GraphicsDevice.Clear(Color.Black);

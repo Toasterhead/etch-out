@@ -31,6 +31,8 @@ namespace Etcher
             int layer = 0)
             : base(Master.DefaultImage, x, y, layer)
         {
+            if (text == null) text = "";
+
             words = text.Split(' ');
 
             if (fieldWidth == null)
@@ -73,7 +75,13 @@ namespace Etcher
             return numLines * characterSet.FontHeight;
         }
 
-        public virtual void ChangeText(string text) { words = text.Split(' ');  charLimit = 0; }
+        public virtual void ChangeText(string text)
+        {
+            if (text == null) text = "";
+            
+            words = text.Split(' ');
+            charLimit = 0;
+        }
 
         public virtual void Draw()
         {

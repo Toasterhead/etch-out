@@ -9,6 +9,9 @@ namespace Etcher
         {
             if (clockTimer != null && clockTimer % 2 == 0 && clockTimer > 0)
             {
+                if (player.CurrentSpeed == Player.Speeds.Fast)
+                    clockTimer = null;
+
                 clockTimer--;
 
                 return;
@@ -32,6 +35,8 @@ namespace Etcher
 
                 pendingSet.Push(new OrbAppearing(positionX, positionY, orb));
             }
+
+            if (Game1.bType) ProcessDropItem(pendingSet);
 
             foreach (IGameObject i in spriteSet)
             {               
@@ -184,7 +189,7 @@ namespace Etcher
 
             Zapper.UpdateTimer();
 
-            if (gateTimer != null && --gateTimer == 0)
+            if (!Game1.bType && gateTimer != null && --gateTimer == 0)
             {
                 gateTimer = null;
 

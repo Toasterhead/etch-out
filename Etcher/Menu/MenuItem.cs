@@ -268,7 +268,7 @@
         public override string ToString() { return Description; }
     }
 
-    public class MICommandLink : MICommand //Needs testing.
+    public class MICommandLink : MICommand
     {
         public readonly SubMenu TheSubMenu;
 

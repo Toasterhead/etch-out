@@ -9,6 +9,9 @@ namespace Etcher
         {
             gameMode = tutorial ? GameModes.Tutorial : GameModes.Action;
 
+            //Ensure that the game returns to the main menu after the play session.
+            MenuManager.TitleMenu.CurrentSubMenu = MenuManager.TitleMenu.GetSubMenu(MenuManager.MenuName.MAIN);
+
             gateTimer = FIRST_LEVEL_TIME;
             level = 0;
             points = 0;

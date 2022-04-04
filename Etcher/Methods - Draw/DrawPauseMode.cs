@@ -112,29 +112,34 @@ namespace Etcher
                     }
                     else if (j >= TIME_STARTS && j <= TIME_ENDS)
                     {
-                        //Render Time Border
-                        if (i == SCREEN_DIVIDER + 1 && j == TIME_STARTS)
-                            spriteBatch.Draw(Images.BORDER_TOP_LEFT, cursor, borderColor);
-                        else if (i > SCREEN_DIVIDER + 1 && i < NUM_TILES_HORIZONTAL - 1 && j == TIME_STARTS)
-                            spriteBatch.Draw(Images.BORDER_TOP, cursor, borderColor);
-                        else if (i == NUM_TILES_HORIZONTAL - 1 && j == TIME_STARTS)
-                            spriteBatch.Draw(Images.BORDER_TOP_RIGHT, cursor, borderColor);
-                        else if (i == SCREEN_DIVIDER + 1 && j >= TIME_STARTS + 1 && j < TIME_ENDS)
-                            spriteBatch.Draw(Images.BORDER_LEFT, cursor, borderColor);
-                        else if (i == NUM_TILES_HORIZONTAL - 1 && j >= TIME_STARTS + 1 && j < TIME_ENDS)
-                            spriteBatch.Draw(Images.BORDER_RIGHT, cursor, borderColor);
-                        else if (i == SCREEN_DIVIDER + 1 && j == TIME_ENDS)
-                            spriteBatch.Draw(Images.BORDER_BOTTOM_LEFT, cursor, borderColor);
-                        else if (i > SCREEN_DIVIDER + 1 && i < NUM_TILES_HORIZONTAL - 1 && j == TIME_ENDS)
-                            spriteBatch.Draw(Images.BORDER_BOTTOM, cursor, borderColor);
-                        else if (i == NUM_TILES_HORIZONTAL - 1 && j == TIME_ENDS)
-                            spriteBatch.Draw(Images.BORDER_BOTTOM_RIGHT, cursor, borderColor);
+                        if (Game1.bType)
+                            spriteBatch.Draw(Images.BORDER, cursor, borderColor);
+                        else
+                        {
+                            //Render Time Border
+                            if (i == SCREEN_DIVIDER + 1 && j == TIME_STARTS)
+                                spriteBatch.Draw(Images.BORDER_TOP_LEFT, cursor, borderColor);
+                            else if (i > SCREEN_DIVIDER + 1 && i < NUM_TILES_HORIZONTAL - 1 && j == TIME_STARTS)
+                                spriteBatch.Draw(Images.BORDER_TOP, cursor, borderColor);
+                            else if (i == NUM_TILES_HORIZONTAL - 1 && j == TIME_STARTS)
+                                spriteBatch.Draw(Images.BORDER_TOP_RIGHT, cursor, borderColor);
+                            else if (i == SCREEN_DIVIDER + 1 && j >= TIME_STARTS + 1 && j < TIME_ENDS)
+                                spriteBatch.Draw(Images.BORDER_LEFT, cursor, borderColor);
+                            else if (i == NUM_TILES_HORIZONTAL - 1 && j >= TIME_STARTS + 1 && j < TIME_ENDS)
+                                spriteBatch.Draw(Images.BORDER_RIGHT, cursor, borderColor);
+                            else if (i == SCREEN_DIVIDER + 1 && j == TIME_ENDS)
+                                spriteBatch.Draw(Images.BORDER_BOTTOM_LEFT, cursor, borderColor);
+                            else if (i > SCREEN_DIVIDER + 1 && i < NUM_TILES_HORIZONTAL - 1 && j == TIME_ENDS)
+                                spriteBatch.Draw(Images.BORDER_BOTTOM, cursor, borderColor);
+                            else if (i == NUM_TILES_HORIZONTAL - 1 && j == TIME_ENDS)
+                                spriteBatch.Draw(Images.BORDER_BOTTOM_RIGHT, cursor, borderColor);
 
-                        //Render Time and Label
-                        if (i == SCREEN_DIVIDER + 3 && j == TIME_STARTS + 2)
-                            spriteBatch.Draw(textLabelTime.Image, cursor, Color.White);
-                        else if (i == SCREEN_DIVIDER + 3 && j == TIME_STARTS + 3)
-                            spriteBatch.Draw(textTime.Image, cursor, Color.White);
+                            //Render Time and Label
+                            if (i == SCREEN_DIVIDER + 3 && j == TIME_STARTS + 2)
+                                spriteBatch.Draw(textLabelTime.Image, cursor, Color.White);
+                            else if (i == SCREEN_DIVIDER + 3 && j == TIME_STARTS + 3)
+                                spriteBatch.Draw(textTime.Image, cursor, Color.White);
+                        }
                     }
                     else spriteBatch.Draw(Images.BORDER, cursor, borderColor);
                 }

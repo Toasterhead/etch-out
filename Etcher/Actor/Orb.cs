@@ -189,11 +189,18 @@ namespace Etcher
             return (int)((l * (N - 1)) / (NUM_LEVELS - 1)) + MIDPOINT_Y - 1;
         }
 
-        public static bool Appears(uint elapsedTime, uint level)
-        {
+        public static bool Appears(uint orbTimer, uint level)
+        {         
             const int INITIATE = 20 * (int)Game1.FRAME_RATE;
             const int INTERVAL = 10 * (int)Game1.FRAME_RATE;
             const int SUBTRACTION_INTERVAL = (int)Game1.FRAME_RATE / 3;
+            const uint B_TYPE_LEVEL = ADJUSTMENT_LEVEL - 1;
+
+            if (Game1.bType)
+            {
+                level = B_TYPE_LEVEL;
+                if (Game1.rand.Next(2) == 0) return false;
+            }
 
             level = level % ADJUSTMENT_LEVEL;
 
@@ -203,7 +210,7 @@ namespace Etcher
             adjustedInitiation = adjustedInitiation < 0 ? 0 : adjustedInitiation;
             adjustedInterval = adjustedInterval < 0 ? 0 : adjustedInterval;
 
-            if (elapsedTime >= adjustedInitiation && (elapsedTime % adjustedInitiation) % adjustedInterval == 0)
+            if (orbTimer >= adjustedInitiation && (orbTimer % adjustedInitiation) % adjustedInterval == 0)
 
                 return true;
 
@@ -213,6 +220,9 @@ namespace Etcher
         public static bool AppearsAsFast(uint level)
         {
             const int INITIAL_RATIO = 10;
+            const uint B_TYPE_LEVEL = ADJUSTMENT_LEVEL - 1;
+
+            if (Game1.bType) level = B_TYPE_LEVEL;
 
             level = level % ADJUSTMENT_LEVEL;
 

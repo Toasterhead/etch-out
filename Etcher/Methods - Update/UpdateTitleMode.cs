@@ -26,8 +26,9 @@ namespace Etcher
             }
 
             if (MenuManager.CheckFinished())
-
-                NewGame(MenuManager.StartTutorial);
+            {
+                gameMode = GameModes.Message;
+            }
         }
     }
 }

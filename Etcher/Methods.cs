@@ -122,6 +122,46 @@ namespace Etcher
             orbTimer = 0;
         }
 
+        public static void ProcessDropItem(Stack<IGameObject> pendingSet)
+        {
+            if (rand.Next((int)ITEM_APPEARANCE_PROBABILITY) == 0)
+            {
+                const int TOTAL_PROBABILITY = 18;
+
+                int dropX = rand.Next(2, SCREEN_DIVIDER - 1);
+                int dropY = rand.Next(2, (FULLFIELD_HEIGHT / TILE_SIZE) - 3);
+
+                Pickup pickup;
+                int nextRand = rand.Next(TOTAL_PROBABILITY);
+                bool occupied = false;
+
+                if (nextRand == 0) pickup = new ExtraLife(dropX, dropY);
+                else if (nextRand < 3) pickup = new Points500(dropX, dropY);
+                else if (nextRand < 6) pickup = new Points250(dropX, dropY);
+                else if (nextRand < 10) pickup = new Points100(dropX, dropY);
+                else if (nextRand < 14) pickup = new HyperSpeed(dropX, dropY);
+                else pickup = new Clock(dropX, dropY);
+
+                foreach (IGameObject i in spriteSet)
+
+                    if (i.Rect.Intersects(pickup.Rect) && !(i is Orb))
+                    {
+                        occupied = true;
+                        break;
+                    }
+
+                foreach (Vector2 i in trail)
+
+                    if (PointToRectCollision(i, pickup.Rect))
+                    {
+                        occupied = true;
+                        break;
+                    }
+
+                if (!occupied) pendingSet.Push(pickup);
+            }
+        }
+
         public static bool InSession()
         {
             return gameMode == GameModes.Action && startTimer == null && deathTimer == null && clearTimer == null;
@@ -193,12 +233,14 @@ namespace Etcher
             currentSound.Play();
         }
 
-        public static void PlayArpeggio()
+        public static void PlayArpeggio() //Doesn't account for volume. Fix later.
         {
             const uint INTERVAL_SLOW = 20;
             const uint INTERVAL_MEDIUM = 10;
             const uint INTERVAL_FAST = 5;
             const uint INTERVAL_CLOCK = 12;
+
+            SoundEffectInstance sound;
 
             if (gameMode == GameModes.Tutorial)
 
@@ -217,9 +259,17 @@ namespace Etcher
                 //Accounting for the fact that the universal timer may be landing on odd numbers.
 
                 if (elapsedTime == 0 || elapsedTime == 1)
-                    Sounds.Pitches.TICK.Play();
+                {
+                    sound = Sounds.Pitches.TICK;
+                    sound.Volume = MediaPlayer.Volume;
+                    sound.Play();
+                }    
                 else if (elapsedTime == HALF_TIME || elapsedTime == HALF_TIME + 1)
-                    Sounds.Pitches.TOCK.Play();
+                {
+                    sound = Sounds.Pitches.TOCK;
+                    sound.Volume = MediaPlayer.Volume;
+                    sound.Play();
+                }
 
                 return;
             }
@@ -241,10 +291,20 @@ namespace Etcher
 
             if (universalTimer % arpeggioInterval == 0)
             {
-                int i = (int)level / 2;
-                int j = (int)arpeggioIndex % Sounds.Pitches.Arpeggio[i].Length;
+                const int POINTS_PER_CHANGE = 3000;
+                const float VOLUME_SCALE = 0.7778f;
 
-                Sounds.Pitches.Arpeggio[i][j].Play();
+                int i, j;
+
+                if (bType)
+                    i = ((int)points / POINTS_PER_CHANGE) % Sounds.Pitches.Arpeggio.Count;
+                else i = (int)level / 2;
+
+                j = (int)arpeggioIndex % Sounds.Pitches.Arpeggio[i].Length;
+
+                sound = Sounds.Pitches.Arpeggio[i][j];
+                sound.Volume = MediaPlayer.Volume == 0.0f ? 0.0f : 1.0f - (VOLUME_SCALE * (1.0f - MediaPlayer.Volume));
+                sound.Play();
 
                 arpeggioIndex++;
             }

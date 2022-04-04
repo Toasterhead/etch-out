@@ -32,16 +32,14 @@ namespace Etcher
                     marginMenuLeft = MARGIN_MAIN_MENU_LEFT;
                     marginMenuTop = MARGIN_TITLE_TOP + titleHeight + (2 * TILE_SIZE);
                     break;
-                case MenuManager.MenuName.HIGH_SCORE:
+                case MenuManager.MenuName.HIGH_SCORE_A:
+                case MenuManager.MenuName.HIGH_SCORE_B:
                     renderTitle = false;
                     marginMenuLeft = MARGIN_HIGH_SCORE_MENU_LEFT;
                     marginMenuTop = TILE_SIZE;
                     break;
+                case MenuManager.MenuName.START:
                 case MenuManager.MenuName.SETTINGS:
-                    renderTitle = true;
-                    marginMenuLeft = MARGIN_WIDE_MENU_LEFT;
-                    marginMenuTop = MARGIN_TITLE_TOP + titleHeight + (2 * TILE_SIZE);
-                    break;
                 case MenuManager.MenuName.ABOUT:
                     renderTitle = true;
                     marginMenuLeft = MARGIN_WIDE_MENU_LEFT;
@@ -63,17 +61,18 @@ namespace Etcher
             for (int i = 0; i < MenuManager.TitleMenu.CurrentSubMenuLength; i++)
             {
                 bool blinking =
-                    i == MenuManager.TitleMenu.CurrentSubMenu.SelectionIndex && 
-                    MenuManager.TitleMenu.CurrentSubMenu.Title == MenuManager.MenuName.MAIN && 
+                    i == MenuManager.TitleMenu.CurrentSubMenu.SelectionIndex &&
+                    (MenuManager.TitleMenu.CurrentSubMenu.Title == MenuManager.MenuName.MAIN ||
+                    MenuManager.TitleMenu.CurrentSubMenu.Title == MenuManager.MenuName.START) &&
                     MenuManager.Finished % BLINK_INTERVAL < (BLINK_INTERVAL / 2);
 
                 MenuItem menuItem = MenuManager.TitleMenu.CurrentSubMenu.GetAtIndex(i);
 
-                Color color = 
-                    menuItem is ISelectable && (menuItem as ISelectable).Muted ? 
-                    Color.Gray : 
+                Color color =
+                    menuItem is ISelectable && (menuItem as ISelectable).Muted ?
+                    Color.Gray :
                     Color.White;
-       
+
                 if (!blinking)
                     spriteBatch.Draw(
                         MenuManager.TheTextfields[i].Image,
@@ -90,24 +89,24 @@ namespace Etcher
             }
 
             spriteBatch.Draw(
-                Images.CURSOR, 
+                Images.CURSOR,
                 new Vector2(
-                    marginMenuLeft - MARGIN_CURSOR, 
-                    marginMenuTop + (2 * selectionIndex * TILE_SIZE)), 
+                    marginMenuLeft - MARGIN_CURSOR,
+                    marginMenuTop + (2 * selectionIndex * TILE_SIZE)),
                 Color.Yellow);
 
-             if (renderTitle)
+            if (renderTitle)
                 spriteBatch.Draw(
                     Images.TITLE,
                     new Rectangle(
-                        marginTitleLeft, 
-                        MARGIN_TITLE_TOP, 
-                        Images.TITLE.Width, 
+                        marginTitleLeft,
+                        MARGIN_TITLE_TOP,
+                        Images.TITLE.Width,
                         titleHeight),
                     new Rectangle(
-                        0, 
-                        titleFrame * titleHeight, 
-                        Images.TITLE.Width, 
+                        0,
+                        titleFrame * titleHeight,
+                        Images.TITLE.Width,
                         titleHeight),
                     Color.White);
 

@@ -46,7 +46,7 @@ namespace Etcher
 
             const uint BLINK_INTERVAL = 6;
 
-            int? listPosition = HighScore.ListPosition((int)points);
+            int? listPosition = HighScore.ListPosition((int)points, bType);
             listPosition = listPosition == null ? 0 : listPosition;
 
             MenuManager.TheTextfields[0].ChangeText("New High Score!");

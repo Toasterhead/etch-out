@@ -140,6 +140,7 @@
     <Compile Include="Methods - Draw\DrawActionMode.cs" />
     <Compile Include="Methods - Draw\DrawGameOverMode.cs" />
     <Compile Include="Methods - Draw\DrawHighScoreMode.cs" />
+    <Compile Include="Methods - Draw\DrawMessageMode.cs" />
     <Compile Include="Methods - Draw\DrawPauseMode.cs" />
     <Compile Include="Methods - Draw\DrawTitleMode.cs" />
     <Compile Include="Methods - Draw\DrawTutorialMode.cs" />
@@ -147,10 +148,12 @@
     <Compile Include="Methods - Initialize\NewGame.cs" />
     <Compile Include="Methods - Input\InputActionMode.cs" />
     <Compile Include="Methods - Input\InputHighScoreMode.cs" />
+    <Compile Include="Methods - Input\InputMessageMode.cs" />
     <Compile Include="Methods - Input\InputPauseMode.cs" />
     <Compile Include="Methods - Input\InputTutorialMode.cs" />
     <Compile Include="Methods - Update\UpdateActionMode.cs" />
     <Compile Include="Methods - Input\InputTitleMode.cs" />
+    <Compile Include="Methods - Update\UpdateMessageMode.cs" />
     <Compile Include="Methods - Update\UpdateGameOverMode.cs" />
     <Compile Include="Methods - Update\UpdateHighScoreMode.cs" />
     <Compile Include="Methods - Update\UpdateTitleMode.cs" />

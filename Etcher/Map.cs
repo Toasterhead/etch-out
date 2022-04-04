@@ -503,6 +503,40 @@ namespace Etcher
             "##oooooooooooooooooooooooooooooooooooooo\n"
         };
 
+        public static readonly string[] BTypeMap =
+        {
+            "########################################\n" +
+            "########################################\n" +
+            "##                                      \n" +
+            "##                                      \n" +
+            "##                                      \n" +
+            "##                                      \n" +
+            "##                                      \n" +
+            "##                                      \n" +
+            "##                                      \n" +
+            "##                                      \n" +
+            "##                                      \n" +
+            "##                                      \n" +
+            "##                                      \n" +
+            "##                                      \n" +
+            "##                                      \n" +
+            "##                                      \n" +
+            "##                                      \n" +
+            "##                                      \n" +
+            "##                                      \n" +
+            "##                                      \n" +
+            "##                                      \n" +
+            "##                                      \n" +
+            "##                                      \n" +
+            "##                                      \n" +
+            "##                                      \n" +
+            "##                                      \n" +
+            "##                                      \n" +
+            "##                                      \n" +
+            "########################################\n" +
+            "########################################\n"
+        };
+
         public static readonly string[] TutorialSteps =
         {
             "########################################\n" +
@@ -602,9 +636,11 @@ namespace Etcher
         public static List<IGameObject> Load(uint level, bool tutorialOn = false)
         {
             List<IGameObject> spriteSet = new List<IGameObject>();
-            string[] levelSet = tutorialOn ? TutorialSteps : Levels;
+            string[] levelSet = Game1.bType ? BTypeMap : Levels;
             int row = 0;
             int column = 0;
+
+            if (tutorialOn) levelSet = TutorialSteps;
 
             foreach(char ch in levelSet[level])
             {

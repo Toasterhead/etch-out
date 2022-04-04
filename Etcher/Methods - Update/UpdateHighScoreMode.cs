@@ -10,10 +10,10 @@ namespace Etcher
         {
             if (HighScore.CheckFinished())
             {
-                HighScore.SubmitScore(new HighScore.FieldEntry(HighScore.NameEntry, (int)points));
+                HighScore.SubmitScore(new HighScore.FieldEntry(HighScore.NameEntry, (int)points), bType);
                 HighScore.ResetFields();
-                MenuManager.UpdateHighScore(HighScore.TopScoresAsString());
-                HighScore.WriteToFileAsync();
+                MenuManager.UpdateHighScore(HighScore.TopScoresAsString(bType), bType);
+                HighScore.WriteToFileAsync(bType);
 
                 gameMode = GameModes.Title;
                 PlayMusic(Sounds.Music.TITLE, repeat: true);
